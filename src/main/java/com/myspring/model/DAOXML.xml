@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.myspring.model.DAOXML"> <!--이 xml을 찾게 해주는 설정. 이것을 service에 가서 id값에 넣어서 사용하면 만약의 memberInsert와 구분하여 사용가능하다  -->
+
+<!-- insert -->
+<insert id="insert" parameterType="dto">
+	insert into springboard  values(springboard_seq.nextval,#{title},#{content},#{writer},sysdate,0,#{password},springboard_seq.nextval,0,0)
+</insert>
+
+<!-- comment insert -->
+<insert id="cinsert" parameterType="cto">
+	insert into springcomment  values(springcomment_seq.nextval,#{msg},sysdate,0)
+</insert>
+
+<!-- clist -->
+<select id="clist" resultType="cto">
+select * from springcomment
+</select>
+
+
+<!-- delete -->
+<delete id="delete" parameterType="dto">
+delete from springboard where seq = #{seq} 
+</delete>
+
+<!-- detail -->
+<select id="detail" parameterType="dto" resultType="dto">
+select * from springboard where seq = #{seq} 
+</select>
+
+<!-- update -->
+<update id="update" parameterType="dto">
+update springboard set title = #{title}, content = #{content}, writer = #{writer} where seq = #{seq}
+</update>
+
+<!-- count -->
+<select id="count" resultType="Integer">
+select count(*) from springboard  
+</select>
+
+<select id="list" resultType="dto" parameterType="map">
+<!-- "<![CDATA["  "]]" 안에 sql쿼리문을 넣을 수 있고 "<"를 사용하기 위해 쓴다. -->
+<!-- "<![CDATA["  "]]"를 안쓸경우 "&lt;"를 써야한다. -->
+<!-- "&lt;"와 "<"는 같은 뜻임. -->
+<![CDATA[ 
+select * from (select rownum rnum, aa.* from (select * from springboard)aa) 
+where rnum>=#{startRow} and rnum<=#{endRow}
+]]>
+</select>
+
+<select id="search" resultType="dto" parameterType="java.util.Map">
+select * from springboard 
+<where>
+	<if test='word!=null and field=="writer"'>
+	writer like '%${word}%'
+	</if>
+	<if test='word!=null and field=="content"'>
+	content like '%${word}%'
+	</if>
+</where>  
+</select>
+
+<update id="hitcount" parameterType="dto">
+	update springboard set hitcount = #{hitcount}+1 where seq = #{seq}
+</update>
+
+</mapper>
