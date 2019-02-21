@@ -58,6 +58,7 @@ public class HomeController {
 	public String writeForm() {
 		return "writeForm";
 	}
+	
 	//글쓰기
 	@RequestMapping(value="/writeForm", method=RequestMethod.POST)
 	public String writeForm(BoardDTO dto) {
